@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Watermark-Android</string>
+    <string name="colors">颜色</string>
+    <string name="select">选择</string>
+</resources>
