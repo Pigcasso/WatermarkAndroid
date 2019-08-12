@@ -12,11 +12,15 @@ import android.view.ViewTreeObserver;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+import io.zhuliang.watermark.util.DimenUtil;
+
 /**
  * @author ZhuLiang
  * @since 2019/08/10 09:29
  */
 public class WatermarkView extends AppCompatImageView implements ViewTreeObserver.OnGlobalLayoutListener {
+
+    private static final boolean GUIDELINE = true;
 
     private int mDegrees;
     private Paint mTextPaint;
@@ -31,7 +35,9 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
 
     private boolean once = true;
     private float initScale;
-    private final Matrix scaleMatrix = new Matrix();
+    private Matrix scaleMatrix = new Matrix();
+
+    private float mTextSize;
 
     public WatermarkView(Context context) {
         this(context, null);
@@ -47,9 +53,9 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     }
 
     private void init() {
+        mTextSize = DimenUtil.sp2px(getContext(), 25);
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextSize(50);
         mTextPaint.setColor(Color.RED);
 
         mTextBoundsPaint = new Paint();
@@ -101,6 +107,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
             scaleMatrix.postTranslate((width - dw) / 2f, (height - dh) / 2f);
             scaleMatrix.postScale(scale, scale, width / 2f, height / 2f);
             setImageMatrix(scaleMatrix);
+
+            mTextPaint.setTextSize(mTextSize * initScale);
             once = false;
         }
     }
@@ -117,6 +125,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         int height = getHeight();
         float dw = d.getIntrinsicWidth() * initScale;
         float dh = d.getIntrinsicHeight() * initScale;
+        float dl = (getWidth() - dw) / 2;
+        float dt = (getHeight() - dh) / 2;
         canvas.drawRect((width - dw) / 2f,
                 (height - dh) / 2f,
                 (width - dw) / 2f + dw,
@@ -129,22 +139,24 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         int horizontalSpacing = mSpacing;
 
         // 计算列数
-        int columns = (int) Math.ceil(getWidth() * 1.0f / mTextBounds.width());
+        int columns = (int) Math.ceil(dw * 1.0f / mTextBounds.width());
         // 计算行数
-        int rows = (int) Math.ceil(getHeight() * 1.0f / verticalSpacing);
+        int rows = (int) Math.ceil(dh * 1.0f / verticalSpacing);
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
                 canvas.save();
-                int left = mTextBounds.width() * j + horizontalSpacing * j;
-                int top = mTextBounds.height() * i + verticalSpacing * i;
+                float left = dl + mTextBounds.width() * j + horizontalSpacing * j;
+                float top = dt + mTextBounds.height() * i + verticalSpacing * i;
                 canvas.rotate(mDegrees, left + mTextBounds.width() / 2f, top + mTextBounds.height() / 2f);
                 canvas.drawText(mWatermarkText, 0, mWatermarkText.length(), left, top + mTextBounds.height(), mTextPaint);
-                canvas.drawRect(left, top,
-                        left + mTextBounds.width(), top + mTextBounds.height(),
-                        mTextBoundsPaint);
-                canvas.drawCircle(left + mTextBounds.width() / 2f, top + mTextBounds.height() / 2f,
-                        5, mPointPaint);
+                if (GUIDELINE) {
+                    canvas.drawRect(left, top,
+                            left + mTextBounds.width(), top + mTextBounds.height(),
+                            mTextBoundsPaint);
+                    canvas.drawCircle(left + mTextBounds.width() / 2f, top + mTextBounds.height() / 2f,
+                            5, mPointPaint);
+                }
                 canvas.restore();
             }
         }
@@ -167,7 +179,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     }
 
     public void setWatermarkTextSize(float textSize) {
-        mTextPaint.setTextSize(textSize);
+        mTextSize = textSize;
+        mTextPaint.setTextSize(mTextSize * initScale);
         invalidate();
     }
 
