@@ -9,6 +9,8 @@ import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
@@ -39,7 +41,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 666
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,6 +138,28 @@ class MainActivity : AppCompatActivity() {
                 saveBitmapToFile()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.activity_main, menu)
+        return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.wm_main_guideline)?.isChecked = mWatermarkView!!.isGuideline
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when (item?.itemId) {
+            R.id.wm_main_guideline -> {
+                val isGuideline = !mWatermarkView!!.isGuideline
+                mWatermarkView!!.isGuideline = isGuideline
+                item.isChecked = isGuideline
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun saveBitmapToFile() {

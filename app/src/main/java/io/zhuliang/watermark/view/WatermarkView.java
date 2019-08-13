@@ -20,7 +20,10 @@ import io.zhuliang.watermark.util.DimenUtil;
  */
 public class WatermarkView extends AppCompatImageView implements ViewTreeObserver.OnGlobalLayoutListener {
 
-    private static final boolean GUIDELINE = true;
+    /**
+     * 是否显示辅助线
+     */
+    private boolean guideline = false;
 
     private int mDegrees;
     private Paint mTextPaint;
@@ -125,11 +128,13 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         int height = getHeight();
         float dw = d.getIntrinsicWidth() * initScale;
         float dh = d.getIntrinsicHeight() * initScale;
-        canvas.drawRect((width - dw) / 2f,
-                (height - dh) / 2f,
-                (width - dw) / 2f + dw,
-                (height - dh) / 2f + dh,
-                mBitmapBoundsPaint);
+        if (guideline) {
+            canvas.drawRect((width - dw) / 2f,
+                    (height - dh) / 2f,
+                    (width - dw) / 2f + dw,
+                    (height - dh) / 2f + dh,
+                    mBitmapBoundsPaint);
+        }
 
         mTextPaint.getTextBounds(mWatermarkText, 0, mWatermarkText.length(), mTextBounds);
 
@@ -151,7 +156,7 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
                 float top = dt + mTextBounds.height() * i + verticalSpacing * i;
                 canvas.rotate(mDegrees, left + mTextBounds.width() / 2f, top + mTextBounds.height() / 2f);
                 canvas.drawText(mWatermarkText, 0, mWatermarkText.length(), left, top + mTextBounds.height(), mTextPaint);
-                if (GUIDELINE) {
+                if (guideline) {
                     canvas.drawRect(left, top,
                             left + mTextBounds.width(), top + mTextBounds.height(),
                             mTextBoundsPaint);
@@ -188,5 +193,14 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     public void setWatermarkSpacing(int spacing) {
         mSpacing = spacing;
         invalidate();
+    }
+
+    public void setGuideline(boolean guideline) {
+        this.guideline = guideline;
+        invalidate();
+    }
+
+    public boolean isGuideline() {
+        return guideline;
     }
 }
