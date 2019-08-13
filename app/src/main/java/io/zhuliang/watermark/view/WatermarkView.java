@@ -125,8 +125,6 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         int height = getHeight();
         float dw = d.getIntrinsicWidth() * initScale;
         float dh = d.getIntrinsicHeight() * initScale;
-        float dl = (getWidth() - dw) / 2;
-        float dt = (getHeight() - dh) / 2;
         canvas.drawRect((width - dw) / 2f,
                 (height - dh) / 2f,
                 (width - dw) / 2f + dw,
@@ -139,9 +137,12 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         int horizontalSpacing = mSpacing;
 
         // 计算列数
-        int columns = (int) Math.ceil(dw * 1.0f / mTextBounds.width());
+        int columns = (int) Math.ceil(dw / (mTextBounds.width() + horizontalSpacing));
         // 计算行数
-        int rows = (int) Math.ceil(dh * 1.0f / verticalSpacing);
+        int rows = (int) Math.ceil(dh / verticalSpacing);
+
+        float dl = (getWidth() - columns * (mTextBounds.width() + horizontalSpacing)) / 2f;
+        float dt = (getHeight() - rows * (mTextBounds.height() + verticalSpacing)) / 2f;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
