@@ -1,11 +1,13 @@
 package io.zhuliang.watermark.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ViewTreeObserver;
@@ -202,5 +204,51 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
 
     public boolean isGuideline() {
         return guideline;
+    }
+
+    public Bitmap getWatermarkBitmap() {
+        Bitmap bitmap = ((BitmapDrawable) getDrawable()).getBitmap();
+        Bitmap canvasBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Canvas canvas = new Canvas(canvasBitmap);
+        int width = canvasBitmap.getWidth();
+        int height = canvas.getHeight();
+        canvas.drawRect(0, 0, width, height, mBitmapBoundsPaint);
+
+        Paint textPaint = new Paint(mTextPaint);
+        textPaint.setTextSize(mTextSize);
+        Rect textBounds = new Rect();
+
+        textPaint.getTextBounds(mWatermarkText, 0, mWatermarkText.length(), textBounds);
+
+        float verticalSpacing = Math.max(textBounds.width(), textBounds.height()) - textBounds.height() + mSpacing;
+        float horizontalSpacing = mSpacing;
+
+        // 计算列数
+        int columns = (int) Math.ceil(width / (textBounds.width() + horizontalSpacing));
+        // 计算行数
+        int rows = (int) Math.ceil(height / verticalSpacing);
+
+        float dl = (width - columns * (textBounds.width() + horizontalSpacing)) / 2f;
+        float dt = (height - rows * (textBounds.height() + verticalSpacing)) / 2f;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                canvas.save();
+                float left = dl + textBounds.width() * j + horizontalSpacing * j;
+                float top = dt + textBounds.height() * i + verticalSpacing * i;
+                canvas.rotate(mDegrees, left + textBounds.width() / 2f, top + textBounds.height() / 2f);
+                canvas.drawText(mWatermarkText, 0, mWatermarkText.length(), left, top + textBounds.height(), textPaint);
+                if (guideline) {
+                    canvas.drawRect(left, top,
+                            left + textBounds.width(), top + textBounds.height(),
+                            mTextBoundsPaint);
+                    canvas.drawCircle(left + textBounds.width() / 2f, top + textBounds.height() / 2f,
+                            5, mPointPaint);
+                }
+                canvas.restore();
+            }
+        }
+
+        return canvasBitmap;
     }
 }

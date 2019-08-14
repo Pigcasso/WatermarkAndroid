@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.view.drawToBitmap
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.color.colorChooser
 import com.afollestad.materialdialogs.input.input
@@ -168,10 +167,10 @@ class MainActivity : AppCompatActivity() {
                 super.run()
                 try {
                     val sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    val file = File(sdCard, "miku.png")
+                    val file = File(sdCard, "miku_watermark.png")
 
                     val fos = FileOutputStream(file)
-                    val bitmap = mWatermarkView!!.drawToBitmap()
+                    val bitmap = mWatermarkView!!.watermarkBitmap
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     MediaScannerConnection.scanFile(this@MainActivity, arrayOf(file.toString()), null) { path, _ ->
                         Log.d(LOG_TAG, "run: $path")
