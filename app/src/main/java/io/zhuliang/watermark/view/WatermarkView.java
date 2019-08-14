@@ -138,8 +138,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
 
         mTextPaint.getTextBounds(mWatermarkText, 0, mWatermarkText.length(), mTextBounds);
 
-        int verticalSpacing = Math.max(mTextBounds.width(), mTextBounds.height()) - mTextBounds.height() + mSpacing;
-        int horizontalSpacing = mSpacing;
+        float verticalSpacing = Math.max(mTextBounds.width(), mTextBounds.height()) - mTextBounds.height() + mSpacing * initScale;
+        float horizontalSpacing = mSpacing * initScale;
 
         // 计算列数
         int columns = (int) Math.ceil(dw / (mTextBounds.width() + horizontalSpacing));
