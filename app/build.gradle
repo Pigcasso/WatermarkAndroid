@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 28
@@ -33,6 +34,9 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.1.0'
     implementation 'com.afollestad.material-dialogs:color:3.1.0'
     implementation 'com.afollestad.material-dialogs:input:3.1.0'
+    implementation 'com.github.Pigcasso:PhotoPicker:0.4.2-alpha'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 }
 repositories {
     mavenCentral()

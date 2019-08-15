@@ -212,7 +212,9 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         Canvas canvas = new Canvas(canvasBitmap);
         int width = canvasBitmap.getWidth();
         int height = canvas.getHeight();
-        canvas.drawRect(0, 0, width, height, mBitmapBoundsPaint);
+        if (guideline) {
+            canvas.drawRect(0, 0, width, height, mBitmapBoundsPaint);
+        }
 
         Paint textPaint = new Paint(mTextPaint);
         textPaint.setTextSize(mTextSize);

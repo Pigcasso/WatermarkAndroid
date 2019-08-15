@@ -1,6 +1,8 @@
 package io.zhuliang.watermark
 
 import android.Manifest
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -23,7 +25,8 @@ import io.zhuliang.watermark.view.WatermarkView
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
-import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * @author ZhuLiang
@@ -39,6 +42,9 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         const val REQUEST_CODE_WRITE_EXTERNAL_STORAGE = 666
+
+        fun makeIntent(context: Context, path: String) = Intent(context, MainActivity::class.java)
+                .apply { putExtra("image_path", path) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,12 +52,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mWatermarkView = findViewById(R.id.watermarkView)
-        try {
+        /*try {
             val `is` = assets.open("miku.png")
             mWatermarkView!!.setImageBitmap(BitmapFactory.decodeStream(`is`))
         } catch (e: IOException) {
             e.printStackTrace()
-        }
+        }*/
+        mWatermarkView!!.setImageBitmap(BitmapFactory.decodeFile(intent.getStringExtra("image_path")))
 
         findViewById<SeekBar>(R.id.seek_text_size)
                 .setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -167,7 +174,8 @@ class MainActivity : AppCompatActivity() {
                 super.run()
                 try {
                     val sdCard = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    val file = File(sdCard, "miku_watermark.png")
+                    val sdf = SimpleDateFormat("yyyy-MM-dd-kk-mm-ss", Locale.getDefault())
+                    val file = File(sdCard, "wm-${sdf.format(Date())}.png")
 
                     val fos = FileOutputStream(file)
                     val bitmap = mWatermarkView!!.watermarkBitmap
