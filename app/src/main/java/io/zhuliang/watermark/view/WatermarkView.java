@@ -148,8 +148,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         // 计算行数
         int rows = (int) Math.ceil(dh / verticalSpacing);
 
-        float dl = (getWidth() - columns * (mTextBounds.width() + horizontalSpacing)) / 2f;
-        float dt = (getHeight() - rows * (mTextBounds.height() + verticalSpacing)) / 2f;
+        float dl = (getWidth() - dw) / 2f;
+        float dt = (getHeight() - dh) / 2f;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -230,8 +230,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         // 计算行数
         int rows = (int) Math.ceil(height / verticalSpacing);
 
-        float dl = (width - columns * (textBounds.width() + horizontalSpacing)) / 2f;
-        float dt = (height - rows * (textBounds.height() + verticalSpacing)) / 2f;
+        float dl = 0;
+        float dt = 0;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
