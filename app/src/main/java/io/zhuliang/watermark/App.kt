@@ -33,6 +33,7 @@ class App : Application() {
                 .arrowDropColor(Color.WHITE)
                 .checkboxColor(colorAccent)
                 .actionBarBackground(colorPrimary)
+                .albumPickerBackgroundColor(Color.WHITE)
                 .statusBarColor(colorPrimaryDark)
         PhotoPicker.photoLoader = GlidePhotoLoader()
     }

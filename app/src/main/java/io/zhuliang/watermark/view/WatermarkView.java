@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
+import io.zhuliang.watermark.BuildConfig;
 import io.zhuliang.watermark.util.DimenUtil;
 
 /**
@@ -25,7 +26,7 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     /**
      * 是否显示辅助线
      */
-    private boolean guideline = false;
+    private boolean guideline = BuildConfig.DEBUG;
 
     private int mDegrees;
     private Paint mTextPaint;

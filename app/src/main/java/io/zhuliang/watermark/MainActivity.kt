@@ -10,11 +10,11 @@ import android.graphics.Color
 import android.media.MediaScannerConnection
 import android.os.Bundle
 import android.os.Environment
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.afollestad.materialdialogs.MaterialDialog
@@ -33,9 +33,7 @@ import java.util.*
  */
 class MainActivity : AppCompatActivity() {
 
-    private val LOG_TAG = "MainActivity"
-
-    private var mWatermarkView: WatermarkView? = null
+    private lateinit var mWatermarkView: WatermarkView
 
     private var mAlpha = 255
     private var mColor = Color.BLACK
@@ -52,88 +50,73 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         mWatermarkView = findViewById(R.id.watermarkView)
-        /*try {
-            val `is` = assets.open("miku.png")
-            mWatermarkView!!.setImageBitmap(BitmapFactory.decodeStream(`is`))
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }*/
-        mWatermarkView!!.setImageBitmap(BitmapFactory.decodeFile(intent.getStringExtra("image_path")))
+        mWatermarkView.setWatermarkColor(Color.argb(mAlpha, Color.red(mColor), Color.green(mColor), Color.blue(mColor)))
+        if (intent.hasExtra("image_path")) {
+            mWatermarkView.setImageBitmap(BitmapFactory.decodeFile(intent.getStringExtra("image_path")))
+        } else {
+            mWatermarkView.setImageBitmap(BitmapFactory.decodeStream(assets.open("miku.png")))
+        }
 
         findViewById<SeekBar>(R.id.seek_text_size)
-                .setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        mWatermarkView!!.setWatermarkTextSize(
+                .setOnSeekBarChangeListener(object : SimpleOnSeekBarChangeListener() {
+                    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                        mWatermarkView.setWatermarkTextSize(
                                 DimenUtil.sp2px(this@MainActivity, progress.toFloat()).toFloat())
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    }
-
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     }
                 })
 
         findViewById<SeekBar>(R.id.seek_rotate)
-                .setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                        mWatermarkView!!.setWatermarkRotation(i)
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar) {
-
-                    }
-
-                    override fun onStopTrackingTouch(seekBar: SeekBar) {
-
+                .setOnSeekBarChangeListener(object : SimpleOnSeekBarChangeListener() {
+                    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                        mWatermarkView.setWatermarkRotation(progress)
                     }
                 })
         val seekColorAlpha = findViewById<SeekBar>(R.id.seek_colorA)
-        seekColorAlpha.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        seekColorAlpha.setOnSeekBarChangeListener(object : SimpleOnSeekBarChangeListener() {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 mAlpha = progress
                 val red = Color.red(mColor)
                 val green = Color.green(mColor)
                 val blue = Color.blue(mColor)
-                mWatermarkView!!.setWatermarkColor(Color.argb(mAlpha, red, green, blue))
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                mWatermarkView.setWatermarkColor(Color.argb(mAlpha, red, green, blue))
             }
         })
         findViewById<SeekBar>(R.id.seek_spacing)
-                .setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        mWatermarkView!!.setWatermarkSpacing(DimenUtil.dip2px(this@MainActivity, progress.toFloat()))
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                    }
-
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                .setOnSeekBarChangeListener(object : SimpleOnSeekBarChangeListener() {
+                    override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                        mWatermarkView.setWatermarkSpacing(DimenUtil.dip2px(this@MainActivity, progress.toFloat()))
                     }
                 })
         findViewById<View>(R.id.btn_color).setOnClickListener {
             MaterialDialog(this).show {
-                val colors = intArrayOf(Color.BLACK, Color.DKGRAY, Color.GRAY, Color.LTGRAY, Color.WHITE)
+                val colors = intArrayOf(
+                        Color.BLACK,
+                        Color.DKGRAY,
+                        Color.GRAY,
+                        Color.LTGRAY,
+                        Color.WHITE,
+                        Color.RED,
+                        Color.GREEN,
+                        Color.BLUE,
+                        Color.YELLOW,
+                        Color.CYAN,
+                        Color.MAGENTA
+                )
                 colorChooser(colors = colors,
-                        allowCustomArgb = false,
+                        allowCustomArgb = true,
                         showAlphaSelector = false) { _, color ->
                     mColor = color
                     val red = Color.red(color)
                     val green = Color.green(color)
                     val blue = Color.blue(color)
-                    mWatermarkView!!.setWatermarkColor(Color.argb(mAlpha, red, green, blue))
+                    mWatermarkView.setWatermarkColor(Color.argb(mAlpha, red, green, blue))
                 }
             }
         }
         findViewById<View>(R.id.btn_text_input).setOnClickListener {
             MaterialDialog(this).show {
                 input(allowEmpty = false) { _, text ->
-                    mWatermarkView!!.setWatermarkText(text.toString())
+                    mWatermarkView.setWatermarkText(text.toString())
                 }
             }
         }
@@ -152,15 +135,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        menu?.findItem(R.id.wm_main_guideline)?.isChecked = mWatermarkView!!.isGuideline
+        menu?.findItem(R.id.wm_main_guideline)?.isChecked = mWatermarkView.isGuideline
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             R.id.wm_main_guideline -> {
-                val isGuideline = !mWatermarkView!!.isGuideline
-                mWatermarkView!!.isGuideline = isGuideline
+                val isGuideline = !mWatermarkView.isGuideline
+                mWatermarkView.isGuideline = isGuideline
                 item.isChecked = isGuideline
                 return true
             }
@@ -178,15 +161,28 @@ class MainActivity : AppCompatActivity() {
                     val file = File(sdCard, "wm-${sdf.format(Date())}.png")
 
                     val fos = FileOutputStream(file)
-                    val bitmap = mWatermarkView!!.watermarkBitmap
+                    val bitmap = mWatermarkView.watermarkBitmap
                     bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
                     MediaScannerConnection.scanFile(this@MainActivity, arrayOf(file.toString()), null) { path, _ ->
-                        Log.d(LOG_TAG, "run: $path")
+                        runOnUiThread {
+                            Toast.makeText(this@MainActivity, "保存文件到：$path", Toast.LENGTH_LONG).show()
+                        }
                     }
                 } catch (e: FileNotFoundException) {
                     e.printStackTrace()
                 }
             }
         }.start()
+    }
+
+    private abstract class SimpleOnSeekBarChangeListener : SeekBar.OnSeekBarChangeListener {
+        override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar) {
+        }
+
+        override fun onStopTrackingTouch(seekBar: SeekBar) {
+        }
     }
 }
