@@ -8,12 +8,35 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="MatchWrap">
+    <style name="Watermark" />
+
+    <style name="Watermark.TableRow">
+        <item name="android:padding">16dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="SeekBar" parent="MatchWrap">
-        <item name="android:max">180</item>
+    <style name="Watermark.Label">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
+
+    <style name="Watermark.Value">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:minWidth">36sp</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">end</item>
+    </style>
+
+    <style name="Watermark.SeekBar">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Watermark.SeekBar.ColorPalette">
+        <item name="android:max">255</item>
+    </style>
+
 </resources>

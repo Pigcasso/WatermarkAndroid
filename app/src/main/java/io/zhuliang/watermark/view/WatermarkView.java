@@ -11,25 +11,23 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.ViewTreeObserver;
 
 import androidx.appcompat.widget.AppCompatImageView;
 
-import io.zhuliang.watermark.BuildConfig;
 import io.zhuliang.watermark.util.DimenUtil;
 
 /**
  * @author ZhuLiang
  * @since 2019/08/10 09:29
  */
-public class WatermarkView extends AppCompatImageView implements ViewTreeObserver.OnGlobalLayoutListener {
+public class WatermarkView extends AppCompatImageView {
 
     /**
      * 是否显示辅助线
      */
-    private boolean guideline = BuildConfig.DEBUG;
+    private boolean guideline = false;
 
-    private int mDegrees;
+    private int mDegrees = 35;
     private Paint mTextPaint;
     private Paint mTextBoundsPaint;
     private Paint mPointPaint;
@@ -40,11 +38,10 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
 
     private int mSpacing;
 
-    private boolean once = true;
     private float initScale;
     private Matrix scaleMatrix = new Matrix();
 
-    private float mTextSize;
+    private int mTextSize;
 
     public WatermarkView(Context context) {
         this(context, null);
@@ -60,7 +57,7 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     }
 
     private void init() {
-        mTextSize = DimenUtil.sp2px(getContext(), 25);
+        mTextSize = DimenUtil.sp2px(getContext(), 12);
         mTextPaint = new Paint();
         mTextPaint.setAntiAlias(true);
         mTextPaint.setColor(Color.RED);
@@ -84,54 +81,64 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        getViewTreeObserver().addOnGlobalLayoutListener(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        getViewTreeObserver().removeOnGlobalLayoutListener(this);
-    }
-
-    @Override
-    public void onGlobalLayout() {
-        if (once) {
-
-            Drawable d = getDrawable();
-            if (d == null) {
-                return;
-            }
-            int width = getWidth();
-            int height = getHeight();
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+        Drawable d = getDrawable();
+        int dw, dh;
+        if (d == null) {
+            dw = width;
+            dh = height;
+        } else {
             // 拿到图片的宽和高
-            int dw = d.getIntrinsicWidth();
-            int dh = d.getIntrinsicHeight();
-            float scale = Math.min(width * 1f / dw, height * 1f / dh);
-            initScale = scale;
-            // 图片移动至屏幕中心
-            scaleMatrix.postTranslate((width - dw) / 2f, (height - dh) / 2f);
-            scaleMatrix.postScale(scale, scale, width / 2f, height / 2f);
-            setImageMatrix(scaleMatrix);
-
-            mTextPaint.setTextSize(mTextSize * initScale);
-            once = false;
+            dw = d.getIntrinsicWidth();
+            dh = d.getIntrinsicHeight();
         }
+
+        initScale = Math.min(width * 1f / dw, height * 1f / dh);
+        mTextPaint.setTextSize(mTextSize * initScale);
+        setMeasuredDimension((int) (dw * initScale), (int) (dh * initScale));
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        Drawable d = getDrawable();
+        int dw, dh;
+        if (d == null) {
+            dw = width;
+            dh = height;
+        } else {
+            // 拿到图片的宽和高
+            dw = d.getIntrinsicWidth();
+            dh = d.getIntrinsicHeight();
+        }
+        // 图片移动至屏幕中心
+        scaleMatrix.reset();
+        scaleMatrix.postTranslate((width - dw) / 2f, (height - dh) / 2f);
+        scaleMatrix.postScale(initScale, initScale, width / 2f, height / 2f);
+        setImageMatrix(scaleMatrix);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        Drawable d = getDrawable();
-        if (d == null) {
-            return;
-        }
         int width = getWidth();
         int height = getHeight();
-        float dw = d.getIntrinsicWidth() * initScale;
-        float dh = d.getIntrinsicHeight() * initScale;
+        int drawableWidth, drawableHeight;
+        Drawable d = getDrawable();
+        if (d == null) {
+            drawableWidth = getWidth();
+            drawableHeight = getHeight();
+        } else {
+            drawableWidth = d.getIntrinsicWidth();
+            drawableHeight = d.getIntrinsicHeight();
+        }
+        float dw = drawableWidth * initScale;
+        float dh = drawableHeight * initScale;
         if (guideline) {
             canvas.drawRect((width - dw) / 2f,
                     (height - dh) / 2f,
@@ -178,9 +185,17 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         invalidate();
     }
 
+    public int getWatermarkRotation() {
+        return mDegrees;
+    }
+
     public void setWatermarkColor(int color) {
         mTextPaint.setColor(color);
         invalidate();
+    }
+
+    public String getWatermarkText() {
+        return mWatermarkText;
     }
 
     public void setWatermarkText(String text) {
@@ -188,15 +203,23 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         invalidate();
     }
 
-    public void setWatermarkTextSize(float textSize) {
+    public void setWatermarkTextSize(int textSize) {
         mTextSize = textSize;
         mTextPaint.setTextSize(mTextSize * initScale);
         invalidate();
     }
 
+    public int getWatermarkTextSize() {
+        return mTextSize;
+    }
+
     public void setWatermarkSpacing(int spacing) {
         mSpacing = spacing;
         invalidate();
+    }
+
+    public int getWatermarkSpacing() {
+        return mSpacing;
     }
 
     public void setGuideline(boolean guideline) {
@@ -209,8 +232,14 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
     }
 
     public Bitmap getWatermarkBitmap() {
-        Bitmap bitmap = ((BitmapDrawable) getDrawable()).getBitmap();
-        Bitmap canvasBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        Drawable d = getDrawable();
+        Bitmap canvasBitmap;
+        if (d == null) {
+            canvasBitmap = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+        } else {
+            Bitmap bitmap = ((BitmapDrawable) getDrawable()).getBitmap();
+            canvasBitmap = bitmap.copy(Bitmap.Config.ARGB_8888, true);
+        }
         Canvas canvas = new Canvas(canvasBitmap);
         int width = canvasBitmap.getWidth();
         int height = canvas.getHeight();

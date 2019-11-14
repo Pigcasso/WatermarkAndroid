@@ -3,4 +3,14 @@
     <string name="colors">颜色</string>
     <string name="select">选择</string>
     <string name="wm_main_guideline">辅助线</string>
+    <string name="watermark_red">红</string>
+    <string name="watermark_green">绿</string>
+    <string name="watermark_blue">蓝</string>
+    <string name="watermark_text_size">字号</string>
+    <string name="watermark_rotation">旋转</string>
+    <string name="watermark_transparency">透明度</string>
+    <string name="watermark_padding">间距</string>
+    <string name="watermark_permission_failed_to_read_externail_storage">没有读取媒体文件的权限</string>
+    <string name="watermark_positive">确认</string>
+    <string name="watermark_negative">取消</string>
 </resources>

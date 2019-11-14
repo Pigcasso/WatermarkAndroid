@@ -1,115 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity">
+    tools:context=".WatermarkEditorActivity">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="字号" />
+        <TableRow style="@style/Watermark.TableRow">
 
-        <SeekBar
-            android:id="@+id/seek_text_size"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:max="30"
-            android:min="0"
-            android:progress="15" />
-    </LinearLayout>
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_text_size" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <SeekBar
+                android:id="@+id/sb_wm_text_size"
+                style="@style/Watermark.SeekBar" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="旋转" />
+            <TextView
+                android:id="@+id/tv_wm_text_size"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
 
-        <SeekBar
-            android:id="@+id/seek_rotate"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:max="180" />
-    </LinearLayout>
+        <TableRow style="@style/Watermark.TableRow">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_rotation" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="透明度" />
+            <SeekBar
+                android:id="@+id/sb_wm_rotation"
+                style="@style/Watermark.SeekBar" />
 
-        <SeekBar
-            android:id="@+id/seek_colorA"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:max="255"
-            android:progress="127" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_wm_rotation"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+        <TableRow style="@style/Watermark.TableRow">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_transparency" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:text="间距" />
+            <SeekBar
+                android:id="@+id/sb_wm_alpha"
+                style="@style/Watermark.SeekBar" />
 
-        <SeekBar
-            android:id="@+id/seek_spacing"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_weight="1"
-            android:max="100"
-            android:progress="0" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_wm_alpha"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+        <TableRow style="@style/Watermark.TableRow">
+
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_padding" />
+
+            <SeekBar
+                android:id="@+id/sb_wm_spacing"
+                style="@style/Watermark.SeekBar" />
+
+            <TextView
+                android:id="@+id/tv_wm_spacing"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+    </TableLayout>
 
     <Button
         android:id="@+id/btn_color"

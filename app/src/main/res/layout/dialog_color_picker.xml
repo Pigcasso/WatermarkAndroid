@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <TableLayout
+        android:id="@+id/colorPalette"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/displayView"
+        tools:background="#f00">
+
+       <TableRow style="@style/Watermark.TableRow">
+
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_red" />
+
+            <SeekBar
+                android:id="@+id/seek_colorR"
+                style="@style/Watermark.SeekBar" />
+
+            <TextView
+                android:id="@+id/redView"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+
+        <TableRow
+            style="@style/Watermark.TableRow">
+
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_green" />
+
+            <SeekBar
+                android:id="@+id/seek_colorG"
+                style="@style/Watermark.SeekBar" />
+
+            <TextView
+                android:id="@+id/greenView"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+
+        <TableRow style="@style/Watermark.TableRow">
+
+            <TextView
+                style="@style/Watermark.Label"
+                android:text="@string/watermark_blue" />
+
+            <SeekBar
+                android:id="@+id/seek_colorB"
+                style="@style/Watermark.SeekBar" />
+
+            <TextView
+                android:id="@+id/blueView"
+                style="@style/Watermark.Value"
+                tools:text="100" />
+        </TableRow>
+    </TableLayout>
+
+    <io.zhuliang.watermark.view.SquareView
+        android:id="@+id/displayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:background="#0f0" />
+</RelativeLayout>

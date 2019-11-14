@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WatermarkEditorActivity">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <io.zhuliang.watermark.view.WatermarkView
+                    android:id="@+id/watermarkView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    tools:ignore="ContentDescription"
+                    tools:srcCompat="@tools:sample/avatars[12]" />
+            </FrameLayout>
+
+            <include
+                android:id="@+id/button"
+                layout="@layout/bottom_actions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+        </LinearLayout>
+
+        <io.zhuliang.watermark.view.WatermarkView
+            android:id="@+id/fullscreenWatermarkView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            tools:ignore="ContentDescription"
+            tools:srcCompat="@tools:sample/avatars[11]" />
+    </FrameLayout>
+</ScrollView>
