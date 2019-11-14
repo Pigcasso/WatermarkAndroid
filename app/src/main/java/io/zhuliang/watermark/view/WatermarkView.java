@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -149,8 +150,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         // 计算行数
         int rows = (int) Math.ceil(dh / verticalSpacing);
 
-        float dl = (getWidth() - dw) / 2f;
-        float dt = (getHeight() - dh) / 2f;
+        float dl = (getWidth() - (columns * mTextBounds.width() + (columns - 1) * horizontalSpacing)) / 2;
+        float dt = (getHeight() - (rows * mTextBounds.height() + (rows - 1) * verticalSpacing)) / 2;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
@@ -219,9 +220,9 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
 
         Paint textPaint = new Paint(mTextPaint);
         textPaint.setTextSize(mTextSize);
-        Rect textBounds = new Rect();
+        RectF textBounds = new RectF(mTextBounds.left / initScale, mTextBounds.top / initScale, mTextBounds.right / initScale, mTextBounds.bottom / initScale);
 
-        textPaint.getTextBounds(mWatermarkText, 0, mWatermarkText.length(), textBounds);
+        // textPaint.getTextBounds(mWatermarkText, 0, mWatermarkText.length(), textBounds);
 
         float verticalSpacing = Math.max(textBounds.width(), textBounds.height()) - textBounds.height() + mSpacing;
         float horizontalSpacing = mSpacing;
@@ -231,8 +232,8 @@ public class WatermarkView extends AppCompatImageView implements ViewTreeObserve
         // 计算行数
         int rows = (int) Math.ceil(height / verticalSpacing);
 
-        float dl = 0;
-        float dt = 0;
+        float dl = (width - (columns * textBounds.width() + (columns - 1) * horizontalSpacing)) / 2;
+        float dt = (height - (rows * textBounds.height() + (rows - 1) * verticalSpacing)) / 2;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
