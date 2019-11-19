@@ -37,7 +37,7 @@ public class WatermarkManager {
         watermarkView.setWatermarkTextSize(App.getInstance().getWmTextSizePx());
         watermarkView.setWatermarkColor(App.getInstance().getWmColor());
         watermarkView.setWatermarkRotation(App.getInstance().getWmRotation());
-        watermarkView.setWatermarkSpacing(App.getInstance().getWmSpacing());
+        watermarkView.setWatermarkSpacing(App.getInstance().getWmSpacingPx());
         initWindowParams();
     }
 
@@ -69,5 +69,19 @@ public class WatermarkManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void refresh() {
+        try {
+            mWindowManager.removeView(watermarkView);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        watermarkView.setWatermarkText(App.getInstance().getWmText());
+        watermarkView.setWatermarkTextSize(App.getInstance().getWmTextSizePx());
+        watermarkView.setWatermarkColor(App.getInstance().getWmColor());
+        watermarkView.setWatermarkRotation(App.getInstance().getWmRotation());
+        watermarkView.setWatermarkSpacing(App.getInstance().getWmSpacingPx());
+        mWindowManager.addView(watermarkView, mParams);
     }
 }

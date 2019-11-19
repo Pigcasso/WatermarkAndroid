@@ -69,6 +69,7 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
      * {@link SeekBar#setMin(int)} 是 {@link android.os.Build.VERSION_CODES#O} 新增的
      */
     private int mTextSizeProgress;
+    private int mSpacingProgress;
 
     public static Intent makeIntent(Context context, Uri data) {
         Intent starter = new Intent(context, WatermarkEditorActivity.class);
@@ -153,22 +154,22 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
         SeekBar spacingSb = findViewById(R.id.sb_wm_spacing);
         mSpacingTv = findViewById(R.id.tv_wm_spacing);
         spacingSb.setOnSeekBarChangeListener(onSeekBarChangeListener);
-        spacingSb.setMax(Constants.MAX_TEXT_SIZE_PROGRESS);
+        spacingSb.setMax(100);
 
         if (isGlobalMode) {
             App app = App.getInstance();
             // 字体
-            int progress = app.getWmTextSizeProgress();
-            textSizeSb.setProgress(progress);
-            setWatermarkTextSize(progress);
+            int textSizeProgress = app.getWmTextSizeProgress();
+            textSizeSb.setProgress(textSizeProgress);
+            setWatermarkTextSize(textSizeProgress);
             // 旋转
             int rotation = app.getWmRotation();
             rotationSb.setProgress(rotation);
             setWatermarkRotation(rotation);
             // 间距
-            int spacing = app.getWmSpacing();
-            spacingSb.setProgress(spacing);
-            setWatermarkSpacing(spacing);
+            int spacingProgress = app.getWmSpacingProgress();
+            spacingSb.setProgress(spacingProgress);
+            setWatermarkSpacing(spacingProgress);
             // 透明度
             int color = app.getWmColor();
             mAlpha = Color.alpha(color);
@@ -266,6 +267,14 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
         return true;
     }
 
+    @Override
+    public void finish() {
+        if (isServiceOn()) {
+            WatermarkManager.newInstance(this, false).show();
+        }
+        super.finish();
+    }
+
     private void loadBitmap() {
         Uri data = getIntent().getData();
         if (data != null) {
@@ -324,9 +333,10 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
         mWatermarkView.setWatermarkColor(color);
     }
 
-    private void setWatermarkSpacing(int spacing) {
-        mSpacingTv.setText(String.valueOf(spacing));
-        int spacingPx = DimenUtil.dip2px(this, spacing);
+    private void setWatermarkSpacing(int progress) {
+        mSpacingProgress = progress;
+        mSpacingTv.setText(String.valueOf(progress));
+        int spacingPx = DimenUtil.dip2px(this, progress);
         mWatermarkView.setWatermarkSpacing(spacingPx);
     }
 
@@ -339,11 +349,11 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
         // 旋转
         app.setWmRotation(mWatermarkView.getWatermarkRotation());
         // 间距
-        app.setWmSpacing(mWatermarkView.getWatermarkSpacing());
+        app.setWmSpacing(mSpacingProgress);
         // 颜色
         app.setWmColor(Color.argb(mAlpha, mRed, mGreen, mBlue));
         if (isServiceOn()) {
-            WatermarkManager.newInstance(this, false).show();
+            WatermarkManager.newInstance(this, false).refresh();
         } else {
             openAccessibilityPage();
         }

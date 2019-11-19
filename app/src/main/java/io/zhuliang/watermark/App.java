@@ -82,8 +82,13 @@ public class App extends Application {
         mSharedPreferences.edit().putInt(WM_COLOR, color).apply();
     }
 
-    public int getWmSpacing() {
+    public int getWmSpacingProgress() {
         return mSharedPreferences.getInt(WM_SPACING, 0);
+    }
+
+    public int getWmSpacingPx() {
+        int progress = getWmSpacingProgress();
+        return DimenUtil.dip2px(this, progress);
     }
 
     public void setWmSpacing(int spacing) {

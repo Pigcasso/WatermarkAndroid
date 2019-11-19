@@ -19,7 +19,7 @@
 
             <SeekBar
                 android:id="@+id/seek_colorR"
-                style="@style/Watermark.SeekBar" />
+                style="@style/Watermark.SeekBar.ColorPalette" />
 
             <TextView
                 android:id="@+id/redView"
@@ -36,7 +36,7 @@
 
             <SeekBar
                 android:id="@+id/seek_colorG"
-                style="@style/Watermark.SeekBar" />
+                style="@style/Watermark.SeekBar.ColorPalette" />
 
             <TextView
                 android:id="@+id/greenView"
@@ -52,7 +52,7 @@
 
             <SeekBar
                 android:id="@+id/seek_colorB"
-                style="@style/Watermark.SeekBar" />
+                style="@style/Watermark.SeekBar.ColorPalette" />
 
             <TextView
                 android:id="@+id/blueView"
