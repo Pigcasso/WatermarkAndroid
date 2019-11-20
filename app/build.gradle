@@ -16,6 +16,14 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    def date = new Date()
+                    def formattedDate = date.format('yyMMdd')
+                    outputFileName = "watermark_${variant.versionName}_${formattedDate}_release.apk"
+                }
+            }
         }
     }
 }
