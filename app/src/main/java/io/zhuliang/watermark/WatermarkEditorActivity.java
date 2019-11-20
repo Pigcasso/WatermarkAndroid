@@ -12,8 +12,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -86,7 +84,6 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
         setContentView(R.layout.activity_watermark_editor);
         isGlobalMode = getIntent().getData() == null;
         if (isGlobalMode) {
-            WatermarkManager.newInstance(this, false).hide();
             WatermarkView watermarkView = findViewById(R.id.watermarkView);
             watermarkView.setVisibility(View.GONE);
             mWatermarkView = findViewById(R.id.fullscreenWatermarkView);
@@ -135,13 +132,13 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
         SeekBar textSizeSb = findViewById(R.id.sb_wm_text_size);
         mTextSizeTv = findViewById(R.id.tv_wm_text_size);
         textSizeSb.setOnSeekBarChangeListener(onSeekBarChangeListener);
-        textSizeSb.setMax(100);
+        textSizeSb.setMax(Constants.MAX_TEXT_SIZE_PROGRESS);
 
         // 旋转
         SeekBar rotationSb = findViewById(R.id.sb_wm_rotation);
         mRotationTv = findViewById(R.id.tv_wm_rotation);
         rotationSb.setOnSeekBarChangeListener(onSeekBarChangeListener);
-        rotationSb.setMax(360);
+        rotationSb.setMax(Constants.MAX_ROTATION);
 
         // 透明度
         SeekBar alphaSb = findViewById(R.id.sb_wm_alpha);
@@ -155,45 +152,29 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
         spacingSb.setOnSeekBarChangeListener(onSeekBarChangeListener);
         spacingSb.setMax(100);
 
-        if (isGlobalMode) {
-            App app = App.getInstance();
-            // 字体
-            int textSizeProgress = app.getWmTextSizeProgress();
-            textSizeSb.setProgress(textSizeProgress);
-            setWatermarkTextSize(textSizeProgress);
-            // 旋转
-            int rotation = app.getWmRotation();
-            rotationSb.setProgress(rotation);
-            setWatermarkRotation(rotation);
-            // 间距
-            int spacingProgress = app.getWmSpacingProgress();
-            spacingSb.setProgress(spacingProgress);
-            setWatermarkSpacing(spacingProgress);
-            // 透明度
-            int color = app.getWmColor();
-            mAlpha = Color.alpha(color);
-            mRed = Color.red(color);
-            mGreen = Color.green(color);
-            mBlue = Color.blue(color);
-            alphaSb.setProgress(mAlpha);
-            setWatermarkAlpha(mAlpha);
-            // 文字
-            mWatermarkView.setWatermarkText(app.getWmText());
-        } else {
-            // 字体
-            textSizeSb.setProgress(0);
-            setWatermarkTextSize(0);
-            // 旋转
-            rotationSb.setProgress(35);
-            setWatermarkRotation(35);
-            // 间距
-            spacingSb.setProgress(0);
-            setWatermarkSpacing(0);
-            // 透明度
-            alphaSb.setProgress(127);
-            setWatermarkAlpha(127);
-        }
-
+        App app = App.getInstance();
+        // 字体
+        int textSizeProgress = app.getWmTextSizeProgress();
+        textSizeSb.setProgress(textSizeProgress);
+        setWatermarkTextSize(textSizeProgress);
+        // 旋转
+        int rotation = app.getWmRotation();
+        rotationSb.setProgress(rotation);
+        setWatermarkRotation(rotation);
+        // 间距
+        int spacingProgress = app.getWmSpacingProgress();
+        spacingSb.setProgress(spacingProgress);
+        setWatermarkSpacing(spacingProgress);
+        // 透明度
+        int color = app.getWmColor();
+        mAlpha = Color.alpha(color);
+        mRed = Color.red(color);
+        mGreen = Color.green(color);
+        mBlue = Color.blue(color);
+        alphaSb.setProgress(mAlpha);
+        setWatermarkAlpha(mAlpha);
+        // 文字
+        mWatermarkView.setWatermarkText(app.getWmText());
 
         View.OnClickListener onClickListener = new View.OnClickListener() {
             @Override
@@ -234,12 +215,13 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
             if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
                 loadBitmap();
             } else {
-                Toast.makeText(this, R.string.watermark_permission_failed_to_read_external_storage, Toast.LENGTH_SHORT).show();
-                finish();
+                showToastAndFinish(R.string.watermark_permission_failed_to_read_external_storage);
             }
         } else if (REQUEST_CODE_SAVE_IMAGE_TO_FILE == requestCode) {
             if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
                 saveBitmapToFile();
+            } else {
+                showToastAndFinish(R.string.watermark_permission_failed_to_write_external_storage);
             }
         }
     }
@@ -266,31 +248,28 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
         return true;
     }
 
-    @Override
-    public void finish() {
-        if (isServiceOn()) {
-            WatermarkManager.newInstance(this, false).show();
-        }
-        super.finish();
-    }
-
     private void loadBitmap() {
         Uri data = getIntent().getData();
         if (data != null) {
-            Bitmap bitmap = null;
-            if ("file".equals(data.getScheme())) {
-                bitmap = BitmapFactory.decodeFile(data.getPath());
-            } else if ("content".equals(data.getScheme())) {
-                try {
-                    bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(data));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+            try {
+                Bitmap bitmap = null;
+                if ("file".equals(data.getScheme())) {
+                    bitmap = BitmapFactory.decodeFile(data.getPath());
+                } else if ("content".equals(data.getScheme())) {
+                    try {
+                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(data));
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-            if (bitmap != null) {
-                mWatermarkView.setImageBitmap(bitmap);
-            } else {
-                finish();
+                if (bitmap != null) {
+                    mWatermarkView.setImageBitmap(bitmap);
+                } else {
+                    finish();
+                }
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
+                showToastAndFinish(R.string.watermark_failed_to_load_bitmap_oom);
             }
         } else {
             finish();
@@ -315,7 +294,7 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
 
     private void setWatermarkTextSize(int progress) {
         mTextSizeProgress = progress;
-        int sp = progress + Constants.MIN_TEXT_SIZE_SP;
+        int sp = progress + Constants.MIN_TEXT_SIZE_PROGRESS;
         mTextSizeTv.setText(String.valueOf(sp));
         mWatermarkView.setWatermarkTextSize(DimenUtil.sp2px(this, sp));
     }
@@ -351,44 +330,8 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
         app.setWmSpacing(mSpacingProgress);
         // 颜色
         app.setWmColor(Color.argb(mAlpha, mRed, mGreen, mBlue));
-        if (isServiceOn()) {
-            WatermarkManager.newInstance(this, false).refresh();
-        } else {
-            openAccessibilityPage();
-        }
+        setResult(Activity.RESULT_OK);
         finish();
-    }
-
-    private boolean isServiceOn() {
-        int i;
-        String sb2 = getPackageName() + "/" + WatermarkService.class.getCanonicalName();
-        try {
-            i = Settings.Secure.getInt(getContentResolver(), "accessibility_enabled");
-        } catch (Settings.SettingNotFoundException e) {
-            e.printStackTrace();
-            i = 0;
-        }
-        TextUtils.SimpleStringSplitter simpleStringSplitter = new TextUtils.SimpleStringSplitter(':');
-        if (i == 1) {
-            String string = Settings.Secure.getString(getContentResolver(), "enabled_accessibility_services");
-            if (string != null) {
-                simpleStringSplitter.setString(string);
-                while (simpleStringSplitter.hasNext()) {
-                    if (simpleStringSplitter.next().equalsIgnoreCase(sb2)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private void openAccessibilityPage() {
-        try {
-            startActivity(new Intent("android.settings.ACCESSIBILITY_SETTINGS"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void saveBitmapToFile() {
@@ -410,19 +353,52 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
                         MediaScannerConnection.scanFile(WatermarkEditorActivity.this, new String[]{file.getAbsolutePath()}, null, new MediaScannerConnection.OnScanCompletedListener() {
                             @Override
                             public void onScanCompleted(final String path, Uri uri) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(WatermarkEditorActivity.this, getString(R.string.watermark_save_file_to, path), Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                                showToastAndFinish(getString(R.string.watermark_save_file_to, path));
                             }
                         });
                     } catch (java.io.IOException e) {
                         e.printStackTrace();
+                    } catch (OutOfMemoryError e) {
+                        showToastAndFinish(R.string.watermark_failed_to_save_oom);
                     }
+                } else {
+                    showToastAndFinish(R.string.watermark_external_storage_not_mounted);
                 }
             }
         });
+    }
+
+    private boolean isUiThread() {
+        return Thread.currentThread() == getMainLooper().getThread();
+    }
+
+    private void showToastAndFinish(final int resId) {
+        if (isUiThread()) {
+            Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(WatermarkEditorActivity.this, resId, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+        }
+    }
+
+    private void showToastAndFinish(final CharSequence text) {
+        if (isUiThread()) {
+            Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(WatermarkEditorActivity.this, text, Toast.LENGTH_LONG).show();
+                    finish();
+                }
+            });
+        }
     }
 }

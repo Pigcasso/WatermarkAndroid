@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import io.zhuliang.watermark.App;
 import io.zhuliang.watermark.util.DimenUtil;
 
 /**
@@ -282,5 +283,16 @@ public class WatermarkView extends ImageView {
         }
 
         return canvasBitmap;
+    }
+
+    public void refresh() {
+        App app = App.getInstance();
+        mWatermarkText = app.getWmText();
+        mTextSize = app.getWmTextSizePx();
+        mTextPaint.setTextSize(mTextSize * initScale);
+        mSpacing = app.getWmSpacingPx();
+        mTextPaint.setColor(app.getWmColor());
+        mDegrees = app.getWmRotation();
+        invalidate();
     }
 }

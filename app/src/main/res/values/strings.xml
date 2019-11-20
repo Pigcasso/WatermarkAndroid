@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">极简水印</string>
+    <string name="app_name">加水印</string>
     <string name="watermark_guideline">辅助线</string>
     <string name="watermark_red">红</string>
     <string name="watermark_green">绿</string>
@@ -8,7 +8,8 @@
     <string name="watermark_rotation">旋转</string>
     <string name="watermark_transparency">透明度</string>
     <string name="watermark_padding">间距</string>
-    <string name="watermark_permission_failed_to_read_external_storage">没有读取媒体文件的权限</string>
+    <string name="watermark_permission_failed_to_read_external_storage">没有读取文件的权限</string>
+    <string name="watermark_permission_failed_to_write_external_storage">没有保存文件的权限</string>
     <string name="watermark_positive">确认</string>
     <string name="watermark_negative">取消</string>
     <string name="watermark_save_file_to">保存文件到：%s</string>
@@ -17,4 +18,11 @@
     <string name="watermark_pick_color">选择颜色</string>
     <string name="watermark_input_text">输入文本</string>
     <string name="watermark_save">保存</string>
+    <string name="watermark_accessibility_description">本服务提供的悬浮层可覆盖锁屏、通知栏等场景，请放心开启，本服务不监听任何用户操作。</string>
+    <string name="watermark_external_storage_not_mounted">没有挂载SD卡</string>
+    <string name="watermark_failed_to_save_oom">保存图片失败：内存溢出</string>
+    <string name="watermark_failed_to_load_bitmap_oom">加载图片失败：内存溢出</string>
+    <string name="watermark_accessibility_page">打开辅助服务设置页</string>
+    <string name="watermark_global_watermark_explain">本项目开源地址：<a href='https://github.com/Pigcasso/WatermarkAndroid'>WatermarkAndroid</a>\n全局水印功能参考了开源项目<a href='https://github.com/yangxiaoge/GlobalWaterMarker\'>GlobalWaterMarker</a></string>
+    <string name="watermark_about">关于</string>
 </resources>

@@ -7,20 +7,21 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:onClick="onSelectPicture"
         android:text="@string/watermark_select_image" />
 
     <Button
-        android:id="@+id/button2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="48dp"
         android:onClick="onGlobalWatermark"
         android:text="@string/watermark_global_watermark" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onAccessibilityPage"
+        android:text="@string/watermark_accessibility_page" />
 
 </LinearLayout>

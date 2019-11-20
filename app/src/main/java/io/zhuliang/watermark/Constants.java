@@ -9,7 +9,9 @@ package io.zhuliang.watermark;
  * </pre>
  */
 
-public class Constants {
-    public static final int MIN_TEXT_SIZE_SP = 12;
-    public static final int MAX_TEXT_SIZE_PROGRESS = 100 - MIN_TEXT_SIZE_SP;
+class Constants {
+    static final int DEFAULT_TEXT_SIZE_SP = 12;
+    static final int MIN_TEXT_SIZE_PROGRESS = 5;
+    static final int MAX_TEXT_SIZE_PROGRESS = 95;
+    static final int MAX_ROTATION = 360;
 }

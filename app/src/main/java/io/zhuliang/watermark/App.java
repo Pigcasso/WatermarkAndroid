@@ -43,7 +43,7 @@ public class App extends Application {
     }
 
     public int getWmTextSizeProgress() {
-        return mSharedPreferences.getInt(WM_TEXT_SIZE, 0);
+        return mSharedPreferences.getInt(WM_TEXT_SIZE, Constants.DEFAULT_TEXT_SIZE_SP - Constants.MIN_TEXT_SIZE_PROGRESS);
     }
 
     public void setWmTextSizeProgress(int textSize) {
@@ -55,7 +55,7 @@ public class App extends Application {
 
     public int getWmTextSizePx() {
         int textSize = getWmTextSizeProgress();
-        return DimenUtil.sp2px(this, textSize + Constants.MIN_TEXT_SIZE_SP);
+        return DimenUtil.sp2px(this, textSize + Constants.MIN_TEXT_SIZE_PROGRESS);
     }
 
     public String getWmText() {
@@ -71,6 +71,9 @@ public class App extends Application {
     }
 
     public void setWmRotation(int rotation) {
+        if (rotation < 0 || rotation > Constants.MAX_ROTATION) {
+            throw new IllegalArgumentException(rotation + " is invalid.");
+        }
         mSharedPreferences.edit().putInt(WM_ROTATION, rotation).apply();
     }
 

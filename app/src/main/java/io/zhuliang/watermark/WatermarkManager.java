@@ -33,11 +33,7 @@ class WatermarkManager {
     private WatermarkManager(Context context) {
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         watermarkView = new WatermarkView(context);
-        watermarkView.setWatermarkText(App.getInstance().getWmText());
-        watermarkView.setWatermarkTextSize(App.getInstance().getWmTextSizePx());
-        watermarkView.setWatermarkColor(App.getInstance().getWmColor());
-        watermarkView.setWatermarkRotation(App.getInstance().getWmRotation());
-        watermarkView.setWatermarkSpacing(App.getInstance().getWmSpacingPx());
+        watermarkView.refresh();
         initWindowParams();
     }
 
@@ -72,16 +68,6 @@ class WatermarkManager {
     }
 
     void refresh() {
-        try {
-            mWindowManager.removeView(watermarkView);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        watermarkView.setWatermarkText(App.getInstance().getWmText());
-        watermarkView.setWatermarkTextSize(App.getInstance().getWmTextSizePx());
-        watermarkView.setWatermarkColor(App.getInstance().getWmColor());
-        watermarkView.setWatermarkRotation(App.getInstance().getWmRotation());
-        watermarkView.setWatermarkSpacing(App.getInstance().getWmSpacingPx());
-        mWindowManager.addView(watermarkView, mParams);
+        watermarkView.refresh();
     }
 }
