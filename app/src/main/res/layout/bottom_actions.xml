@@ -77,18 +77,18 @@
         android:id="@+id/btn_color"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="选择颜色" />
+        android:text="@string/watermark_pick_color" />
 
     <Button
         android:id="@+id/btn_text_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="输入文本" />
+        android:text="@string/watermark_input_text" />
 
     <Button
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="保存" />
+        android:text="@string/watermark_save" />
 
 </LinearLayout>

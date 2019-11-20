@@ -5,5 +5,5 @@
         android:id="@+id/wm_main_guideline"
         android:checkable="true"
         android:showAsAction="never"
-        android:title="@string/wm_main_guideline" />
+        android:title="@string/watermark_guideline" />
 </menu>

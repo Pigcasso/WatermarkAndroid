@@ -234,7 +234,7 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
             if (PackageManager.PERMISSION_GRANTED == grantResults[0]) {
                 loadBitmap();
             } else {
-                Toast.makeText(this, R.string.watermark_permission_failed_to_read_externail_storage, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.watermark_permission_failed_to_read_external_storage, Toast.LENGTH_SHORT).show();
                 finish();
             }
         } else if (REQUEST_CODE_SAVE_IMAGE_TO_FILE == requestCode) {
@@ -413,7 +413,7 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        Toast.makeText(WatermarkEditorActivity.this, "保存文件到：" + path, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(WatermarkEditorActivity.this, getString(R.string.watermark_save_file_to, path), Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }

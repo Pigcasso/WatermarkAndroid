@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:onClick="onSelectPicture"
-        android:text="选择图片" />
+        android:text="@string/watermark_select_image" />
 
     <Button
         android:id="@+id/button2"
@@ -21,6 +21,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="48dp"
         android:onClick="onGlobalWatermark"
-        android:text="全局水印" />
+        android:text="@string/watermark_global_watermark" />
 
 </LinearLayout>
