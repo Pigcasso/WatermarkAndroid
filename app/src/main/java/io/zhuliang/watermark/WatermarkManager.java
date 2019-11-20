@@ -16,14 +16,14 @@ import io.zhuliang.watermark.view.WatermarkView;
  * </pre>
  */
 
-public class WatermarkManager {
+class WatermarkManager {
     private static WatermarkManager sInstance;
 
     private WindowManager mWindowManager;
     private WindowManager.LayoutParams mParams;
     private WatermarkView watermarkView;
 
-    public static WatermarkManager newInstance(Context context, boolean z) {
+    static WatermarkManager newInstance(Context context, boolean z) {
         if (sInstance == null || z) {
             sInstance = new WatermarkManager(context);
         }
@@ -55,7 +55,7 @@ public class WatermarkManager {
         mParams = params;
     }
 
-    public void show() {
+    void show() {
         try {
             mWindowManager.addView(watermarkView, mParams);
         } catch (Exception e) {
@@ -63,7 +63,7 @@ public class WatermarkManager {
         }
     }
 
-    public void hide() {
+    void hide() {
         try {
             mWindowManager.removeView(watermarkView);
         } catch (Exception e) {
@@ -71,7 +71,7 @@ public class WatermarkManager {
         }
     }
 
-    public void refresh() {
+    void refresh() {
         try {
             mWindowManager.removeView(watermarkView);
         } catch (Exception e) {

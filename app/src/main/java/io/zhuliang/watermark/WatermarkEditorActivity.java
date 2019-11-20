@@ -1,6 +1,7 @@
 package io.zhuliang.watermark;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -22,8 +23,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +44,7 @@ import io.zhuliang.watermark.view.WatermarkView;
  * </pre>
  */
 
-public class WatermarkEditorActivity extends AppCompatActivity implements ColorPickerDialog.OnColorPickerListener,
+public class WatermarkEditorActivity extends Activity implements ColorPickerDialog.OnColorPickerListener,
         InputDialog.OnInputListener {
     private static final int REQUEST_CODE_READ_IMAGE = 233;
     private static final int REQUEST_CODE_SAVE_IMAGE_TO_FILE = 666;
@@ -201,10 +200,10 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
             public void onClick(View v) {
                 switch (v.getId()) {
                     case R.id.btn_color:
-                        new ColorPickerDialog().show(getSupportFragmentManager(), "color_picker");
+                        new ColorPickerDialog().show(getFragmentManager(), "color_picker");
                         break;
                     case R.id.btn_text_input:
-                        new InputDialog().show(getSupportFragmentManager(), "input");
+                        new InputDialog().show(getFragmentManager(), "input");
                         break;
                     case R.id.btn_save:
                         if (isGlobalMode) {
@@ -221,10 +220,10 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
         findViewById(R.id.btn_save).setOnClickListener(onClickListener);
 
         if (!isGlobalMode) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 loadBitmap();
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_READ_IMAGE);
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_CODE_READ_IMAGE);
             }
         }
     }
@@ -393,8 +392,8 @@ public class WatermarkEditorActivity extends AppCompatActivity implements ColorP
     }
 
     private void saveBitmapToFile() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_SAVE_IMAGE_TO_FILE);
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_SAVE_IMAGE_TO_FILE);
             return;
         }
         WatermarkThreadTool.execute(new Runnable() {

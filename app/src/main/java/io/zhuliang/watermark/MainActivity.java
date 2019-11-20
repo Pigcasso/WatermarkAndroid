@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * <pre>
@@ -17,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * </pre>
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
     private static final int REQUEST_CODE_PICK_PHOTO = 123;
 
     @Override

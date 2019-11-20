@@ -11,8 +11,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-
-import androidx.appcompat.widget.AppCompatImageView;
+import android.widget.ImageView;
 
 import io.zhuliang.watermark.util.DimenUtil;
 
@@ -20,7 +19,7 @@ import io.zhuliang.watermark.util.DimenUtil;
  * @author ZhuLiang
  * @since 2019/08/10 09:29
  */
-public class WatermarkView extends AppCompatImageView {
+public class WatermarkView extends ImageView {
 
     /**
      * 是否显示辅助线

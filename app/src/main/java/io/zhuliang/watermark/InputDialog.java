@@ -1,6 +1,8 @@
 package io.zhuliang.watermark;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,8 +11,6 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 
 /**
  * <pre>
@@ -43,7 +43,7 @@ public class InputDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        Context context = getContext();
+        Context context = getActivity();
         if (context == null) {
             throw new NullPointerException();
         }
