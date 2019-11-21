@@ -195,6 +195,17 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
                         new InputDialog().show(getFragmentManager(), "input");
                         break;
                     case R.id.btn_save:
+                        App app = App.getInstance();
+                        // 文字
+                        app.setWmText(mWatermarkView.getWatermarkText());
+                        // 字体
+                        app.setWmTextSizeProgress(mTextSizeProgress);
+                        // 旋转
+                        app.setWmRotation(mWatermarkView.getWatermarkRotation());
+                        // 间距
+                        app.setWmSpacing(mSpacingProgress);
+                        // 颜色
+                        app.setWmColor(Color.argb(mAlpha, mRed, mGreen, mBlue));
                         if (isGlobalMode) {
                             applyToGlobal();
                         } else {
@@ -384,17 +395,6 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
     }
 
     private void applyToGlobal() {
-        App app = App.getInstance();
-        // 文字
-        app.setWmText(mWatermarkView.getWatermarkText());
-        // 字体
-        app.setWmTextSizeProgress(mTextSizeProgress);
-        // 旋转
-        app.setWmRotation(mWatermarkView.getWatermarkRotation());
-        // 间距
-        app.setWmSpacing(mSpacingProgress);
-        // 颜色
-        app.setWmColor(Color.argb(mAlpha, mRed, mGreen, mBlue));
         setResult(Activity.RESULT_OK);
         finish();
     }
