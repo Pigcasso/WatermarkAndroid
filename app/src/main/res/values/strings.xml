@@ -25,4 +25,5 @@
     <string name="watermark_accessibility_page">打开辅助服务设置页</string>
     <string name="watermark_global_watermark_explain">本项目开源地址：<a href='https://github.com/Pigcasso/WatermarkAndroid'>WatermarkAndroid</a>\n全局水印功能参考了开源项目<a href='https://github.com/yangxiaoge/GlobalWaterMarker\'>GlobalWaterMarker</a></string>
     <string name="watermark_about">关于</string>
+    <string name="watermark_failed_to_load_bitmap_file_not_found">图片加载失败：没有找到</string>
 </resources>

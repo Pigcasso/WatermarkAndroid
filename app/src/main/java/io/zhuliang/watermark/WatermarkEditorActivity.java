@@ -5,16 +5,22 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.media.ExifInterface;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,14 +29,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
 import io.zhuliang.watermark.util.DimenUtil;
+import io.zhuliang.watermark.util.ImageUtil;
 import io.zhuliang.watermark.view.WatermarkView;
 
 /**
@@ -251,29 +258,61 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
     private void loadBitmap() {
         Uri data = getIntent().getData();
         if (data != null) {
+            String result;
+            Cursor cursor = null;
             try {
-                Bitmap bitmap = null;
-                if ("file".equals(data.getScheme())) {
-                    bitmap = BitmapFactory.decodeFile(data.getPath());
-                } else if ("content".equals(data.getScheme())) {
-                    try {
-                        bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(data));
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-                if (bitmap != null) {
-                    mWatermarkView.setImageBitmap(bitmap);
-                } else {
-                    finish();
-                }
-            } catch (OutOfMemoryError e) {
+                cursor = getContentResolver().query(data, new String[]{MediaStore.MediaColumns.DATA}, null, null, null);
+            } catch (Exception e) {
                 e.printStackTrace();
-                showToastAndFinish(R.string.watermark_failed_to_load_bitmap_oom);
+            }
+            if (cursor == null) {
+                result = data.getPath();
+            } else {
+                cursor.moveToFirst();
+                result = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+                cursor.close();
+            }
+            if (result == null || result.isEmpty()) {
+                showToastAndFinish(R.string.watermark_failed_to_load_bitmap_file_not_found);
+            } else {
+                setFilePath(result);
             }
         } else {
             finish();
         }
+    }
+
+    /**
+     * 参考：百度OCR SDK 的 CropView#setFilePath(String)
+     */
+    private void setFilePath(@NonNull String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        Bitmap original = BitmapFactory.decodeFile(path, options);
+        Bitmap bitmap;
+        try {
+            // 图片太大会导致内存泄露，所以在显示前对图片进行裁剪。
+            int maxPreviewImageSize = 2560;
+            int min = Math.min(options.outWidth, options.outHeight);
+            min = Math.min(min, maxPreviewImageSize);
+
+            WindowManager windowManager = getWindowManager();
+            Point screenSize = new Point();
+            windowManager.getDefaultDisplay().getSize(screenSize);
+            min = Math.min(min, screenSize.x * 2 / 3);
+
+            options.inSampleSize = ImageUtil.calculateInSampleSize(options, min, min);
+            options.inScaled = true;
+            options.inDensity = options.outWidth;
+            options.inTargetDensity = min * options.inSampleSize;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            options.inJustDecodeBounds = false;
+            bitmap = BitmapFactory.decodeFile(path, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+            bitmap = original;
+        }
+        mWatermarkView.setImageBitmap(bitmap);
     }
 
     @Override
