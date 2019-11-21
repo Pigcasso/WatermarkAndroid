@@ -13,8 +13,8 @@
     <string name="watermark_positive">确认</string>
     <string name="watermark_negative">取消</string>
     <string name="watermark_save_file_to">保存文件到：%s</string>
-    <string name="watermark_select_image">选择图片</string>
-    <string name="watermark_global_watermark">全局水印</string>
+    <string name="watermark_select_image">图片加水印</string>
+    <string name="watermark_global_watermark">全局加水印</string>
     <string name="watermark_pick_color">选择颜色</string>
     <string name="watermark_input_text">输入文本</string>
     <string name="watermark_save">保存</string>
