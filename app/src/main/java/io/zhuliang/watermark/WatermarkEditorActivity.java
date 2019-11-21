@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -308,6 +309,31 @@ public class WatermarkEditorActivity extends Activity implements ColorPickerDial
             options.inPreferredConfig = Bitmap.Config.RGB_565;
             options.inJustDecodeBounds = false;
             bitmap = BitmapFactory.decodeFile(path, options);
+
+            ExifInterface exif = new ExifInterface(path);
+            int rotation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            int rotationInDegrees = ImageUtil.exifToDegrees(rotation);
+            if (rotationInDegrees != 0) {
+                int dx = bitmap.getWidth() / 2;
+                int dy = bitmap.getHeight() / 2;
+                Matrix matrix = new Matrix();
+                Bitmap rotatedBitmap;
+                if (rotationInDegrees == 90 || rotationInDegrees == 270) {
+                    matrix.postTranslate(-dx, -dy);
+                    matrix.postRotate(rotationInDegrees);
+                    matrix.postTranslate(dy, dx);
+                    rotatedBitmap = Bitmap.createBitmap(bitmap.getHeight(), bitmap.getWidth(), Bitmap.Config.RGB_565);
+                } else {
+                    matrix.postTranslate(-dx, -dy);
+                    matrix.postRotate(rotationInDegrees);
+                    matrix.postTranslate(dx, dy);
+                    rotatedBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.RGB_565);
+                }
+                Canvas canvas = new Canvas(rotatedBitmap);
+                canvas.drawBitmap(bitmap, matrix, null);
+                bitmap.recycle();
+                bitmap = rotatedBitmap;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             bitmap = original;
